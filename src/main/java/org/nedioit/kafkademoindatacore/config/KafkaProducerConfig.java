@@ -74,25 +74,24 @@ public class KafkaProducerConfig {
     @Bean
     public CommandLineRunner kafkaMessageSender(KafkaTemplate<String, String> kafkaTemplate) {
         return args -> {
-            ObjectMapper objectMapper = new ObjectMapper();
-            try {
-                // lire le fichier JSON
-                JsonNode jsonNode = objectMapper.readTree(new File("src/main/resources/file.json"));
-                // parcourir les messages dans le fichier JSON
-                jsonNode.forEach(messageNode -> {
-                    // Récupérer l'ID de chaque message
-                    String key = UUID.randomUUID().toString();
-                    String message = messageNode.toString();
-                    // Envoyer le message avec l'ID 100 fois
-                   // for (int i = 0; i < 10; i++) {
-                        kafkaTemplate.send(topic, key, message);
-                  //  }
-                });
-            } catch (IOException e) {
-                e.printStackTrace();
+            // Messages à envoyer
+            List<String> messages = Arrays.asList(
+                    "first message",
+                    "second message",
+                    "third message"
+
+            );
+
+            // Parcourir la liste des messages
+            for (String message : messages) {
+                // Générer une clé unique pour chaque message
+                String key = UUID.randomUUID().toString();
+                // Envoyer le message avec la clé générée
+                kafkaTemplate.send(topic, key, message);
             }
         };
     }
+
 
 
 
